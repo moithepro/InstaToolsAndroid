@@ -1,21 +1,16 @@
+package com.moithepro.instatoolsandroid;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ScrollView;
-import android.widget.Toast;
-
-import com.moithepro.instatoolsandroid.R;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import or.nevet.goraphics.ExceptiOrn;
 import or.nevet.goraphics.GOraphicViewBuilder;

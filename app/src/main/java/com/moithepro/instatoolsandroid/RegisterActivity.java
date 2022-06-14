@@ -1,19 +1,19 @@
+package com.moithepro.instatoolsandroid;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import com.moithepro.instatoolsandroid.R;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import or.nevet.goraphics.ExceptiOrn;
 import or.nevet.goraphics.GOraphicViewBuilder;
 import or.nevet.goraphics.GOraphics;
 import or.nevet.goraphics.ListActivityGraphics;
 
-public class AddProfileActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +27,12 @@ public class AddProfileActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     String userName = ((EditText)graphics.getOrViewsList().get(1).getView().getChildAt(0)).getText().toString().trim();
+                    String password = ((EditText)graphics.getOrViewsList().get(2).getView().getChildAt(0)).getText().toString().trim();
 //                    if (isUserExistsOnInstaLoader(userName, password)) {
-                        InstagramActivity.setNewUserName(userName);
-                        finish();
+                        Intent intent = new Intent(RegisterActivity.this, InstagramActivity.class);
+                        intent.putExtra("userName", userName);
+                        intent.putExtra("password", password);
+                        startActivity(intent);
 //                    } else {
 //                        graphics.showToastMessage("The details that you entered are wrong");
 //                    }
