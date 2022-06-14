@@ -1,2 +1,8 @@
+pluginManagement {
+    repositories {
+        maven { url "https://chaquo.com/maven" }
+    }
+}
+
 include ':app'
 rootProject.name = "InstaToolsAndroid"

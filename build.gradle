@@ -11,7 +11,9 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
-
+plugins {
+    id 'com.chaquo.python' version '12.0.0' apply false
+}
 allprojects {
     repositories {
         google()
