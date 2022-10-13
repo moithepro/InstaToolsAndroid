@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/profile_menu_unfollowers"
+        android:icon="@drawable/ic_baseline_person_remove_24"
+        android:title="Unfollowers" />
+    <item
+        android:id="@+id/whitelist"
+        android:icon="@drawable/ic_baseline_view_list_24"
+        android:title="Whitelist" />
+    <!--<item
+        android:id="@+id/profile_menu_most_likes"
+        android:icon="@drawable/ic_baseline_thumb_up_24"
+        android:title="Most Likes" />-->
+    <!--<item
+        android:id="@+id/profile_menu_most_comments"
+        android:icon="@drawable/ic_baseline_comment_24"
+        android:title="Most Comments" />-->
+
+</menu>

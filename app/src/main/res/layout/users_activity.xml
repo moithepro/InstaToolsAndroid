@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/users_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context="com.moithepro.instatoolsandroid.UsersActivity"
+    tools:ignore="ExtraText">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rect"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme"
+                app:menu="@menu/unfollowers_toolbar_menu"
+                app:title="Users"
+                app:titleTextColor="@color/colorPrimary">
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <!--  <TextView
+                  android:id="@+id/refreshing"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="15sp"
+                  android:textAlignment="center"
+                  android:textColor="@color/colorPrimary" /> -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="15sp"
+                android:layout_marginBottom="50sp"
+                android:orientation="vertical">
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1">
+
+                    <TableRow
+                        android:id="@+id/first_user"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/round">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/first_user_image"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="20sp"
+                            android:layout_marginTop="20sp"
+                            android:layout_marginRight="20sp"
+                            android:layout_marginBottom="20sp"
+                            android:layout_weight="1"
+                            android:src="@drawable/default_icon"
+                            app:civ_border_color="@color/colorPrimary"
+                            app:civ_border_width="2dp" />
+
+                        <TextView
+                            android:id="@+id/first_username"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+
+                            android:layout_weight="1"
+                            android:fontFamily="@font/source_code_pro_bold"
+                            android:maxLines="1"
+                            android:text="@string/add_user"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimary" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/first_followers"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10sp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/source_code_pro_bold"
+                                android:textAlignment="center"
+                                android:textColor="@color/colorPrimary" />
+
+                            <TextView
+                                android:id="@+id/first_following"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10sp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/source_code_pro_bold"
+                                android:textAlignment="center"
+                                android:textColor="@color/colorPrimary" />
+
+                        </LinearLayout>
+
+                    </TableRow>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1">
+
+                    <TableRow
+                        android:id="@+id/second_user"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/round">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/second_user_image"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="20sp"
+                            android:layout_marginTop="20sp"
+                            android:layout_marginRight="20sp"
+                            android:layout_marginBottom="20sp"
+                            android:layout_weight="1"
+                            android:src="@drawable/default_icon"
+                            app:civ_border_color="@color/colorPrimary"
+                            app:civ_border_width="2dp" />
+
+                        <TextView
+                            android:id="@+id/second_username"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/source_code_pro_bold"
+                            android:maxLines="1"
+                            android:text="@string/add_user"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimary" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/second_followers"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10sp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/source_code_pro_bold"
+                                android:textAlignment="center"
+                                android:textColor="@color/colorPrimary" />
+
+                            <TextView
+                                android:id="@+id/second_following"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10sp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/source_code_pro_bold"
+                                android:textAlignment="center"
+                                android:textColor="@color/colorPrimary" />
+                        </LinearLayout>
+
+                    </TableRow>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1">
+
+                    <TableRow
+                        android:id="@+id/third_user"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/round">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/third_user_image"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="20sp"
+                            android:layout_marginTop="20sp"
+                            android:layout_marginRight="20sp"
+                            android:layout_marginBottom="20sp"
+                            android:layout_weight="1"
+                            android:src="@drawable/default_icon"
+                            app:civ_border_color="@color/colorPrimary"
+                            app:civ_border_width="2dp" />
+
+                        <TextView
+                            android:id="@+id/third_username"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/source_code_pro_bold"
+                            android:maxLines="1"
+                            android:text="@string/add_user"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimary" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/third_followers"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10sp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/source_code_pro_bold"
+                                android:textAlignment="center"
+                                android:textColor="@color/colorPrimary" />
+
+                            <TextView
+                                android:id="@+id/third_following"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="10sp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/source_code_pro_bold"
+                                android:textAlignment="center"
+                                android:textColor="@color/colorPrimary" />
+                        </LinearLayout>
+
+                    </TableRow>
+                </TableRow>
+            </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nv"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/logout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Log out" />
+        </LinearLayout>
+    </com.google.android.material.navigation.NavigationView>
+    <!--app:menu=""/>
+
+
+    android:autoSizeMaxTextSize="100sp"
+                            android:autoSizeMinTextSize="8sp"
+                            android:autoSizeStepGranularity="2sp"
+                            android:autoSizeTextType="uniform"-->
+
+</androidx.drawerlayout.widget.DrawerLayout>

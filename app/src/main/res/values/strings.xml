@@ -15,7 +15,28 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="log_in">Log In</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="logging_in">Logging In</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="add_user">Add User</string>
+    <string name="followers_newline">Followers: \n</string>
+    <string name="following_newline">Following: \n</string>
+    <string name="unfollowers_activity_key">unfollowers_activity_key</string>
+    <string name="index_key">index_key</string>
+    <string name="profile_key">profile_key</string>
+    <string name="first_key">first_key</string>
+    <string name="unfollowers_of">Unfollowers Of @</string>
+    <string name="refreshing">Refreshing...</string>
+    <string name="retrieving_followers">Retrieving Followers...</string>
+    <string name="retrieving_following">Retrieving Following...</string>
+    <string name="verified"><font color='#057EF7'>(Verified) </font></string>
+    <string name="unfollowers_list_key">unfollowers_list_key</string>
+    <string name="users_activity_key">users_activity_key</string>
+    <string name="user_key">user_key</string>
+    <string name="login_key">login_key</string>
+    <string name="password_key">password_key</string>
+    <string name="username_key">username_key</string>
 </resources>

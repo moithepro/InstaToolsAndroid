@@ -1,6 +1,7 @@
 import instaloader
 from instaloader import ConnectionException, InvalidArgumentException, BadCredentialsException, \
-    ProfileNotExistsException, LoginRequiredException, Instaloader, Profile, TwoFactorAuthRequiredException, \
+    ProfileNotExistsException, LoginRequiredException, Instaloader, Profile, \
+    TwoFactorAuthRequiredException, \
     PrivateProfileNotFollowedException
 
 # error codes
@@ -36,12 +37,14 @@ class Interface:
         try:
             print("login")
             self.L = instaloader.Instaloader()
-            self.L.login(username, password)
+            if not (username == "" and password == ""):
+                self.L.login(username, password)
             return Result(NO_ERROR, 0)
         except InvalidArgumentException as err:
             return Result(E_InvalidArgumentException, 0)
 
         except ConnectionException as err:
+            print(err)
             return Result(E_ConnectionException, 0)
 
         except BadCredentialsException as err:
@@ -55,6 +58,26 @@ class Interface:
     def close(self):
         self.L.close()
 
+    def get_profile_from_username(self, username):
+        try:
+            profile: Profile = instaloader.Profile.from_username(self.L.context, username)
+            return Result(NO_ERROR, profile)
+        except ProfileNotExistsException as err:
+            return Result(E_ProfileNotExistsException, 0)
+        except Exception as ex:
+            print(ex)
+            return Result(E_Exception, 0)
+
+    def get_profile_from_id(self, id):
+        try:
+            profile: Profile = instaloader.Profile.from_id(self.L.context, id)
+            return Result(NO_ERROR, profile)
+        except ProfileNotExistsException as err:
+            return Result(E_ProfileNotExistsException, 0)
+        except Exception as ex:
+            print(ex)
+            return Result(E_Exception, 0)
+
     def get_followers(self, username):
         try:
             print("get")
@@ -65,7 +88,7 @@ class Interface:
             return Result(E_ProfileNotExistsException, 0)
         except LoginRequiredException as err:
             return Result(E_LoginRequiredException, 0)
-        except PrivateProfileNotFollowedException:
+        except PrivateProfileNotFollowedException as err:
             return Result(E_PrivateProfileNotFollowedException, 0)
         except Exception as ex:
             print(ex)
@@ -79,16 +102,16 @@ class Interface:
             return Result(E_ProfileNotExistsException, 0)
         except LoginRequiredException as err:
             return Result(E_LoginRequiredException, 0)
-        except PrivateProfileNotFollowedException:
+        except PrivateProfileNotFollowedException as err:
             return Result(E_PrivateProfileNotFollowedException, 0)
         except Exception as ex:
             print(ex)
             return Result(E_Exception, 0)
 
-    def is_followed(self, username):
+    def is_accessible(self, username):
         try:
             profile: Profile = instaloader.Profile.from_username(self.L.context, username)
-            return Result(NO_ERROR, profile.followed_by_viewer)
+            return Result(NO_ERROR, not profile.is_private or profile.followed_by_viewer)
         except ProfileNotExistsException as err:
             return Result(E_ProfileNotExistsException, 0)
         except Exception as ex:
