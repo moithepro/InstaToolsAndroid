@@ -29,6 +29,8 @@ import com.moithepro.instatoolsandroid.jInstaloader.JInstaloader;
 import com.moithepro.instatoolsandroid.jInstaloader.JInvalidArgumentException;
 import com.moithepro.instatoolsandroid.jInstaloader.JTwoFactorAuthRequiredException;
 
+import java.io.FileNotFoundException;
+
 public class LoginActivity extends AppCompatActivity {
     private EditText password;
     private EditText username;
@@ -74,7 +76,11 @@ public class LoginActivity extends AppCompatActivity {
                             String u = username.getText().toString().trim();
                             String p = password.getText().toString().trim();
                             loader.login(u, p);
-
+                            try {
+                                loader.saveSession("session");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             mainHandler.post(() -> {
                                 sp.edit().putString(getString(R.string.username_key), u).putString(getString(R.string.password_key), p).apply();
 
@@ -332,7 +338,40 @@ public class LoginActivity extends AppCompatActivity {
                 Handler mainHandler = new Handler(Looper.getMainLooper());
                 loginThread = new Thread(() -> {
 
+                    try {
+                        loader.loadSession("session");
+                        mainHandler.post(() -> {
+                            Intent intent = new Intent(this, UsersActivity.class);
+                            startActivity(intent);
+                            loggingIn = false;
+                            password.setEnabled(true);
+                            username.setEnabled(true);
+                            login.setText(R.string.log_in);
+                            finish();
+                            //setContentView(R.layout.users_activity);
 
+                        });
+                    }catch (FileNotFoundException e){
+                        mainHandler.post(() -> {
+                            AD = new AlertDialog.Builder(this)
+                                    .setTitle("Error")
+                                    .setMessage("Session File Not Found")
+
+                                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                                    // The dialog is automatically dismissed when a dialog button is clicked.
+                                    .setPositiveButton(android.R.string.ok, null)
+
+                                    // A null listener allows the button to dismiss the dialog and take no further action.
+                                    .show();
+                            loggingIn = false;
+                            password.setEnabled(true);
+                            username.setEnabled(true);
+                            login.setText(R.string.log_in);
+                        });
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
                     try {
                         loader.login(spu, spp);
 

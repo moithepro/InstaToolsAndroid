@@ -14,7 +14,7 @@ E_LoginRequiredException = 5
 E_TwoFactorAuthRequiredException = 6
 E_PrivateProfileNotFollowedException = 7
 E_Exception = 8
-
+E_FileNotFoundError = 9
 
 class Result:
 
@@ -32,7 +32,27 @@ class Result:
 class Interface:
     def __init__(self):
         self.L: Instaloader = None
-
+    def load_session(self, session):
+        try:
+            print("load")
+            self.L = instaloader.Instaloader()
+            self.L.load_session_from_file(session)
+            return Result(NO_ERROR, 0)
+        except FileNotFoundError as err:
+            return Result(E_FileNotFoundError, 0)
+        except Exception as ex:
+            print(ex)
+            return Result(E_Exception, 0)
+    def save_session(self, session):
+        try:
+            print("save")
+            self.L.save_session_to_file(session)
+            return Result(NO_ERROR, 0)
+        except LoginRequiredException as err:
+            return Result(E_LoginRequiredException, 0)
+        except Exception as ex:
+            print(ex)
+            return Result(E_Exception, 0)
     def login(self, username, password):
         try:
             print("login")

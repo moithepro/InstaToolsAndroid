@@ -4,6 +4,7 @@ package com.moithepro.instatoolsandroid.jInstaloader;
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,8 @@ public class JInstaloader {
     public static final int E_TwoFactorAuthRequiredException = 6;
     public static final int E_PrivateProfileNotFollowedException = 7;
     public static final int E_Exception = 8;
+
+    public static final int E_FileNotFoundError = 9;
     private Python py;
     private PyObject instaloaderInterface;
     private String loggedInUsername = null;
@@ -55,7 +58,30 @@ public class JInstaloader {
                 throw new JException();
         }
     }
-
+    public void loadSession(String filename) throws FileNotFoundException, JException {
+        PyObject res = instaloaderInterface.callAttr("load_session", instaloaderInterface, filename);
+        int err = res.callAttr("get_e").toInt();
+        switch (err) {
+            case NO_ERROR:
+                break;
+            case E_FileNotFoundError:
+                throw new FileNotFoundException();
+            case E_Exception:
+                throw new JException();
+        }
+    }
+    public void saveSession(String filename) throws JException, JLoginRequiredException {
+        PyObject res = instaloaderInterface.callAttr("save_session", instaloaderInterface, filename);
+        int err = res.callAttr("get_e").toInt();
+        switch (err) {
+            case NO_ERROR:
+                break;
+            case E_LoginRequiredException:
+                throw new JLoginRequiredException();
+            case E_Exception:
+                throw new JException();
+        }
+    }
     public void login(String username, String password) throws JInvalidArgumentException, JConnectionException, JBadCredentialsException, JTwoFactorAuthRequiredException, JException {
 
         PyObject res = instaloaderInterface.callAttr("login", instaloaderInterface, username, password);
