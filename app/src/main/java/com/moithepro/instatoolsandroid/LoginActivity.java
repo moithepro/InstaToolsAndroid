@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chaquo.python.Python;
 import com.chaquo.python.android.AndroidPlatform;
@@ -29,6 +30,7 @@ import com.moithepro.instatoolsandroid.jInstaloader.JInstaloader;
 import com.moithepro.instatoolsandroid.jInstaloader.JInvalidArgumentException;
 import com.moithepro.instatoolsandroid.jInstaloader.JTwoFactorAuthRequiredException;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 public class LoginActivity extends AppCompatActivity {
@@ -76,8 +78,12 @@ public class LoginActivity extends AppCompatActivity {
                             String u = username.getText().toString().trim();
                             String p = password.getText().toString().trim();
                             loader.login(u, p);
+                            File file = new File(this.getFilesDir(), "session");
                             try {
+
+                                //loader.saveSession(file.getCanonicalPath());
                                 loader.saveSession("session");
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -337,21 +343,24 @@ public class LoginActivity extends AppCompatActivity {
 
                 Handler mainHandler = new Handler(Looper.getMainLooper());
                 loginThread = new Thread(() -> {
-
+                    File file = new File(this.getFilesDir(), "session");
                     try {
-                        loader.loadSession("session");
+
+                        //loader.loadSession(file.getCanonicalPath());
+                        loader.loadSession(spu,"session");
                         mainHandler.post(() -> {
                             Intent intent = new Intent(this, UsersActivity.class);
                             startActivity(intent);
                             loggingIn = false;
                             password.setEnabled(true);
                             username.setEnabled(true);
+                            Toast.makeText(this, "Logged in as @" + loader.getLoggedInUsername(), Toast.LENGTH_SHORT).show();
                             login.setText(R.string.log_in);
                             finish();
                             //setContentView(R.layout.users_activity);
 
                         });
-                    }catch (FileNotFoundException e){
+                    } catch (FileNotFoundException er) {
                         mainHandler.post(() -> {
                             AD = new AlertDialog.Builder(this)
                                     .setTitle("Error")
@@ -363,116 +372,14 @@ public class LoginActivity extends AppCompatActivity {
 
                                     // A null listener allows the button to dismiss the dialog and take no further action.
                                     .show();
-                            loggingIn = false;
-                            password.setEnabled(true);
-                            username.setEnabled(true);
-                            login.setText(R.string.log_in);
+
                         });
-                    }
-                    catch (Exception e){
+                        login(spu, spp);
+                    } catch (Exception e) {
                         e.printStackTrace();
+                        login(spu, spp);
                     }
-                    try {
-                        loader.login(spu, spp);
 
-                        mainHandler.post(() -> {
-                            Intent intent = new Intent(this, UsersActivity.class);
-                            startActivity(intent);
-                            loggingIn = false;
-                            password.setEnabled(true);
-                            username.setEnabled(true);
-                            login.setText(R.string.log_in);
-                            finish();
-                            //setContentView(R.layout.users_activity);
-
-                        });
-                    } catch (JInvalidArgumentException e) {
-                        mainHandler.post(() -> {
-                            AD = new AlertDialog.Builder(this)
-                                    .setTitle("Error")
-                                    .setMessage("Username Does not Exist")
-
-                                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                                    // The dialog is automatically dismissed when a dialog button is clicked.
-                                    .setPositiveButton(android.R.string.ok, null)
-
-                                    // A null listener allows the button to dismiss the dialog and take no further action.
-                                    .show();
-                            loggingIn = false;
-                            password.setEnabled(true);
-                            username.setEnabled(true);
-                            login.setText(R.string.log_in);
-                        });
-                    } catch (JConnectionException e) {
-                        mainHandler.post(() -> {
-                            AD = new AlertDialog.Builder(this)
-                                    .setTitle("Error")
-                                    .setMessage("Connection Failed")
-
-                                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                                    // The dialog is automatically dismissed when a dialog button is clicked.
-                                    .setPositiveButton(android.R.string.ok, null)
-
-                                    // A null listener allows the button to dismiss the dialog and take no further action.
-                                    .show();
-                            loggingIn = false;
-                            password.setEnabled(true);
-                            username.setEnabled(true);
-                            login.setText(R.string.log_in);
-                        });
-
-                    } catch (JBadCredentialsException e) {
-                        mainHandler.post(() -> {
-                            AD = new AlertDialog.Builder(this)
-                                    .setTitle("Error")
-                                    .setMessage("Password is Wrong")
-
-                                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                                    // The dialog is automatically dismissed when a dialog button is clicked.
-                                    .setPositiveButton(android.R.string.ok, null)
-
-                                    // A null listener allows the button to dismiss the dialog and take no further action.
-                                    .show();
-                            loggingIn = false;
-                            password.setEnabled(true);
-                            username.setEnabled(true);
-                            login.setText(R.string.log_in);
-                        });
-                    } catch (JTwoFactorAuthRequiredException e) {
-                        mainHandler.post(() -> {
-                            AD = new AlertDialog.Builder(this)
-                                    .setTitle("Error")
-                                    .setMessage("Two Factor Authentication is required but is not supported right now. you can try logging in with another account.")
-
-                                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                                    // The dialog is automatically dismissed when a dialog button is clicked.
-                                    .setPositiveButton(android.R.string.ok, null)
-
-                                    // A null listener allows the button to dismiss the dialog and take no further action.
-                                    .show();
-                            loggingIn = false;
-                            password.setEnabled(true);
-                            username.setEnabled(true);
-                            login.setText(R.string.log_in);
-                        });
-                    } catch (JException e) {
-                        mainHandler.post(() -> {
-                            AD = new AlertDialog.Builder(this)
-                                    .setTitle("Error")
-                                    .setMessage("Unknown Error")
-
-                                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                                    // The dialog is automatically dismissed when a dialog button is clicked.
-                                    .setPositiveButton(android.R.string.ok, null)
-
-                                    // A null listener allows the button to dismiss the dialog and take no further action.
-                                    .show();
-                            loggingIn = false;
-                            password.setEnabled(true);
-                            username.setEnabled(true);
-                            login.setText(R.string.log_in);
-                        });
-                    }
                 });
                 loginThread.start();
             }
@@ -498,7 +405,118 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+    private void login(String u, String p) {
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        try {
+            loader.login(u, p);
 
+            try {
+                //loader.saveSession(file.getCanonicalPath());
+                loader.saveSession("session");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            mainHandler.post(() -> {
+                Intent intent = new Intent(this, UsersActivity.class);
+                startActivity(intent);
+                loggingIn = false;
+                password.setEnabled(true);
+                username.setEnabled(true);
+                login.setText(R.string.log_in);
+                finish();
+                //setContentView(R.layout.users_activity);
+
+            });
+        } catch (JInvalidArgumentException e) {
+            mainHandler.post(() -> {
+                AD = new AlertDialog.Builder(this)
+                        .setTitle("Error")
+                        .setMessage("Username Does not Exist")
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton(android.R.string.ok, null)
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .show();
+                loggingIn = false;
+                password.setEnabled(true);
+                username.setEnabled(true);
+                login.setText(R.string.log_in);
+            });
+        } catch (JConnectionException e) {
+            mainHandler.post(() -> {
+                AD = new AlertDialog.Builder(this)
+                        .setTitle("Error")
+                        .setMessage("Connection Failed")
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton(android.R.string.ok, null)
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .show();
+                loggingIn = false;
+                password.setEnabled(true);
+                username.setEnabled(true);
+                login.setText(R.string.log_in);
+            });
+
+        } catch (JBadCredentialsException e) {
+            mainHandler.post(() -> {
+                AD = new AlertDialog.Builder(this)
+                        .setTitle("Error")
+                        .setMessage("Password is Wrong")
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton(android.R.string.ok, null)
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .show();
+                loggingIn = false;
+                password.setEnabled(true);
+                username.setEnabled(true);
+                login.setText(R.string.log_in);
+            });
+        } catch (JTwoFactorAuthRequiredException e) {
+            mainHandler.post(() -> {
+                AD = new AlertDialog.Builder(this)
+                        .setTitle("Error")
+                        .setMessage("Two Factor Authentication is required but is not supported right now. you can try logging in with another account.")
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton(android.R.string.ok, null)
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .show();
+                loggingIn = false;
+                password.setEnabled(true);
+                username.setEnabled(true);
+                login.setText(R.string.log_in);
+            });
+        } catch (JException e) {
+            mainHandler.post(() -> {
+                AD = new AlertDialog.Builder(this)
+                        .setTitle("Error")
+                        .setMessage("Unknown Error")
+
+                        // Specifying a listener allows you to take an action before dismissing the dialog.
+                        // The dialog is automatically dismissed when a dialog button is clicked.
+                        .setPositiveButton(android.R.string.ok, null)
+
+                        // A null listener allows the button to dismiss the dialog and take no further action.
+                        .show();
+                loggingIn = false;
+                password.setEnabled(true);
+                username.setEnabled(true);
+                login.setText(R.string.log_in);
+            });
+        }
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

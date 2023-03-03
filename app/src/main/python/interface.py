@@ -1,4 +1,7 @@
 import instaloader
+import os
+from os.path import join, dirname
+from com.chaquo.python import Python
 from instaloader import ConnectionException, InvalidArgumentException, BadCredentialsException, \
     ProfileNotExistsException, LoginRequiredException, Instaloader, Profile, \
     TwoFactorAuthRequiredException, \
@@ -32,27 +35,32 @@ class Result:
 class Interface:
     def __init__(self):
         self.L: Instaloader = None
-    def load_session(self, session):
+    def load_session(self,username, session):
         try:
             print("load")
             self.L = instaloader.Instaloader()
-            self.L.load_session_from_file(session)
-            return Result(NO_ERROR, 0)
+            #files_dir = str(Python.getPlatform().getApplication().getFilesDir())
+            #self.L.load_session_from_file(join(dirname(__file__),session))
+            self.L.load_session_from_file(username,filename=join(os.environ["HOME"],session))
+            return Result(NO_ERROR, Profile.own_profile(self.L.context).username)
         except FileNotFoundError as err:
+            print(err)
             return Result(E_FileNotFoundError, 0)
-        except Exception as ex:
-            print(ex)
-            return Result(E_Exception, 0)
+        #except Exception as ex:
+        #    print(ex)
+        #    return Result(E_Exception, 0)
     def save_session(self, session):
         try:
             print("save")
-            self.L.save_session_to_file(session)
+            #files_dir = str(Python.getPlatform().getApplication().getFilesDir())
+            self.L.save_session_to_file(join(os.environ["HOME"],session))
             return Result(NO_ERROR, 0)
         except LoginRequiredException as err:
+            print(err)
             return Result(E_LoginRequiredException, 0)
-        except Exception as ex:
-            print(ex)
-            return Result(E_Exception, 0)
+        #except Exception as ex:
+        #    print(ex)
+        #    return Result(E_Exception, 0)
     def login(self, username, password):
         try:
             print("login")

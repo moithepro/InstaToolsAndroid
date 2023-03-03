@@ -58,11 +58,12 @@ public class JInstaloader {
                 throw new JException();
         }
     }
-    public void loadSession(String filename) throws FileNotFoundException, JException {
-        PyObject res = instaloaderInterface.callAttr("load_session", instaloaderInterface, filename);
+    public void loadSession(String username,String filename) throws FileNotFoundException, JException {
+        PyObject res = instaloaderInterface.callAttr("load_session", instaloaderInterface,username, filename);
         int err = res.callAttr("get_e").toInt();
         switch (err) {
             case NO_ERROR:
+                loggedInUsername = res.callAttr("get_arg").toString();
                 break;
             case E_FileNotFoundError:
                 throw new FileNotFoundException();
