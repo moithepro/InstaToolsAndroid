@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         <activity
+            android:name=".WhitelistActivity"
+            android:exported="false" />
+        <activity
             android:name=".UsersActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
@@ -17,14 +20,15 @@
             android:name=".UnfollowersActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity android:name=".LoginActivity" android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            android:exported="true">
+        <activity
+            android:name=".LoginActivity"
+            android:configChanges="orientation"
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-
             </intent-filter>
         </activity>
 

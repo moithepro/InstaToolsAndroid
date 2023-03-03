@@ -1,5 +1,6 @@
 package com.moithepro.instatoolsandroid;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PersistableBundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -41,6 +43,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 public class UnfollowersActivity extends AppCompatActivity {
     private LinearLayout ll;
     private ArrayList<Button> buttonsList = new ArrayList<>();
+    private ArrayList<JInstaProfile> unfollowers = new ArrayList<>();
     private DrawerLayout dl;
     private ActionBarDrawerToggle abdt;
     private Toolbar tb;
@@ -52,6 +55,10 @@ public class UnfollowersActivity extends AppCompatActivity {
     private TextView statusText;
     private AlertDialog AD;
     private SharedPreferences sp;
+
+    private enum Mode {UNFOLLOWERS, WHITELIST}
+
+    private Mode currentMode = Mode.UNFOLLOWERS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +74,21 @@ public class UnfollowersActivity extends AppCompatActivity {
         dl.addDrawerListener(abdt);
         abdt.syncState();
         final NavigationView nav_view = findViewById(R.id.nv);
+        nav_view.setNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.whitelist) {
+                tb.setTitle("Whitelisted of @" + profile.getUsername());
+                currentMode = Mode.WHITELIST;
+                setUnfollowers(unfollowers);
+                return true;
+            }
+            if (item.getItemId() == R.id.profile_menu_unfollowers) {
+                tb.setTitle("Unfollowers of @" + profile.getUsername());
+                currentMode = Mode.UNFOLLOWERS;
+                setUnfollowers(unfollowers);
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
+        });
         Bundle b = getIntent().getExtras();
 
         index = b.getInt(getString(R.string.index_key));
@@ -87,33 +109,115 @@ public class UnfollowersActivity extends AppCompatActivity {
             refreshUnfollowers();
         else {
             Gson gson = new Gson();
-            List<JInstaProfile> unfollowers = gson.fromJson(json, new TypeToken<ArrayList<JInstaProfile>>() {
+            ArrayList<JInstaProfile> unfollowers = gson.fromJson(json, new TypeToken<ArrayList<JInstaProfile>>() {
             }.getType());
             setUnfollowers(unfollowers);
         }
     }
 
-    private void setUnfollowers(List<JInstaProfile> unfollowers) {
+    private void setUnfollowers(ArrayList<JInstaProfile> unfollowers) {
         for (Button b :
                 buttonsList) {
             ll.removeView(b);
         }
         buttonsList.clear();
 
-        for (JInstaProfile p :
-                unfollowers) {
-            addButtonToLayout((p.isVerified() ? getString(R.string.verified) : "") + "@" + p.getUsername(), p);
+        this.unfollowers = unfollowers;
+        if (currentMode == Mode.UNFOLLOWERS) {
+            reloadUnfollowers();
+        } else if (currentMode == Mode.WHITELIST) {
+            reloadWhitelist();
         }
         for (Button b :
                 buttonsList) {
             b.setOnClickListener(view -> {
                 if (view.getTag() instanceof JInstaProfile) {
-                    Uri uri = Uri.parse("https://www.instagram.com/" + ((JInstaProfile) view.getTag()).getUsername()); // missing 'http://' will cause crashed
+                    Uri uri = Uri.parse("https://www.instagram.com/" + ((JInstaProfile) view.getTag()).getUsername()); // missing 'http://' will cause crash
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                     startActivity(intent);
                 }
             });
+            b.setOnLongClickListener(view -> {
+                if (currentMode == Mode.UNFOLLOWERS) {
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    List<JInstaProfile> whitelist = new ArrayList<>();
+                                    String json = sp.getString(getString(R.string.whitelist_key) + index + "_" + profile.getUsername(), "");
+                                    if (json != "") {
+                                        Gson gson = new Gson();
+                                        whitelist = gson.fromJson(json, new TypeToken<ArrayList<JInstaProfile>>() {
+                                        }.getType());
+                                    }
+                                    whitelist.add((JInstaProfile) view.getTag());
+                                    Gson gson = new Gson();
+                                    String json2 = gson.toJson(whitelist);
+                                    sp.edit().putString(getString(R.string.whitelist_key) + index + "_" + profile.getUsername(), json2).apply();
+                                    setUnfollowers(unfollowers);
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("WhiteList?").setPositiveButton("Yes", dialogClickListener)
+                            .setNegativeButton("No", dialogClickListener).show();
+                } else if (currentMode == Mode.WHITELIST) {
+                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case DialogInterface.BUTTON_POSITIVE:
+                                    List<JInstaProfile> whitelist = new ArrayList<>();
+                                    String json = sp.getString(getString(R.string.whitelist_key) + index + "_" + profile.getUsername(), "");
+                                    if (json != "") {
+                                        Gson gson = new Gson();
+                                        whitelist = gson.fromJson(json, new TypeToken<ArrayList<JInstaProfile>>() {
+                                        }.getType());
+                                    }
+                                    whitelist.remove((JInstaProfile) view.getTag());
+                                    Gson gson = new Gson();
+                                    String json2 = gson.toJson(whitelist);
+                                    sp.edit().putString(getString(R.string.whitelist_key) + index + "_" + profile.getUsername(), json2).apply();
+                                    setUnfollowers(unfollowers);
+                                    break;
+
+                                case DialogInterface.BUTTON_NEGATIVE:
+                                    //No button clicked
+                                    break;
+                            }
+                        }
+                    };
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("Remove from whitelist?").setPositiveButton("Yes", dialogClickListener)
+                            .setNegativeButton("No", dialogClickListener).show();
+                }
+                return false;
+            });
         }
+    }
+
+    private boolean isWhitelisted(JInstaProfile p) {
+        String json = sp.getString(getString(R.string.whitelist_key) + index + "_" + profile.getUsername(), "");
+
+        if (json == "")
+            return false;
+        Gson gson = new Gson();
+        List<JInstaProfile> whitelist = gson.fromJson(json, new TypeToken<ArrayList<JInstaProfile>>() {
+        }.getType());
+        for (JInstaProfile profile :
+                whitelist) {
+            if (profile.getUsername().equals(p.getUsername()))
+                return true;
+        }
+        return false;
     }
 
     private void refreshUnfollowers() {
@@ -133,7 +237,7 @@ public class UnfollowersActivity extends AppCompatActivity {
                 mainHandler.post(() -> {
                     statusText.setText(R.string.refreshing);
                 });
-                List<JInstaProfile> unfollowers = new ArrayList<>();
+                ArrayList<JInstaProfile> unfollowers = new ArrayList<>();
                 unfollowers.addAll(following);
                 unfollowers.removeAll(followers);
                 mainHandler.post(() -> {
@@ -150,12 +254,7 @@ public class UnfollowersActivity extends AppCompatActivity {
                     errorUsernameNotExists();
                     statusText.setText("");
                 });
-            } catch (JLoginRequiredException e) {
-                mainHandler.post(() -> {
-                    errorUserNotAccessible();
-                    statusText.setText("");
-                });
-            } catch (JPrivateProfileNotFollowedException e) {
+            } catch (JLoginRequiredException | JPrivateProfileNotFollowedException e) {
                 mainHandler.post(() -> {
                     errorUserNotAccessible();
                     statusText.setText("");
@@ -219,6 +318,64 @@ public class UnfollowersActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
+    }
+    // when navigation button is pressed
+
+
+    private void reloadUnfollowers() {
+        // get whitelist from shared preferences
+        String json = sp.getString(getString(R.string.whitelist_key) + index + "_" + profile.getUsername(), "");
+        List<JInstaProfile> whitelist = new ArrayList<>();
+        if (json.isEmpty()) {
+
+        } else {
+            Gson gson = new Gson();
+            whitelist = gson.fromJson(json, new TypeToken<List<JInstaProfile>>() {
+            }.getType());
+        }
+
+        List<JInstaProfile> unfollowers = new ArrayList<>(this.unfollowers);
+
+        for (JInstaProfile p :
+                whitelist) {
+            unfollowers.remove(p);
+        }
+        for (Button b :
+                buttonsList) {
+            ll.removeView(b);
+        }
+        buttonsList.clear();
+        for (JInstaProfile p :
+                unfollowers) {
+            addButtonToLayout((p.isVerified() ? getString(R.string.verified) : "") + "@" + p.getUsername(), p);
+        }
+        currentMode = Mode.UNFOLLOWERS;
+
+    }
+
+    private void reloadWhitelist() {
+        // get whitelist from shared preferences
+        String json = sp.getString(getString(R.string.whitelist_key) + index + "_" + profile.getUsername(), "");
+        List<JInstaProfile> whitelist = new ArrayList<>();
+        if (json.isEmpty()) {
+
+        } else {
+            Gson gson = new Gson();
+            whitelist = gson.fromJson(json, new TypeToken<List<JInstaProfile>>() {
+            }.getType());
+        }
+
+        for (Button b :
+                buttonsList) {
+            ll.removeView(b);
+        }
+        buttonsList.clear();
+        for (JInstaProfile p :
+                whitelist) {
+            addButtonToLayout("⭐" + (p.isVerified() ? getString(R.string.verified) : "") + "@" + p.getUsername(), p);
+        }
+        currentMode = Mode.WHITELIST;
+
     }
 
     public Button addButtonToLayout(String username, Object tag) {

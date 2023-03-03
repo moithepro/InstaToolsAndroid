@@ -39,4 +39,5 @@
     <string name="login_key">login_key</string>
     <string name="password_key">password_key</string>
     <string name="username_key">username_key</string>
+    <string name="whitelist_key">whitelist_key</string>
 </resources>
