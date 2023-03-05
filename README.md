@@ -9,7 +9,7 @@
  * Keeping Instagram login session after closing app
  * A modern simplistic UI
 
-
+### Notes:
  
-* The scraping is slow because of rate limiting!!! instagram does not allow to scrape data too quick as they will block you from doing so.
-* I strongly advice using an alternate account to login in the app.
+ * The scraping is slow because of rate limiting!!! instagram does not allow to scrape data too quick as they will block you from doing so.
+ * I strongly advice using an alternate account to login in the app.
